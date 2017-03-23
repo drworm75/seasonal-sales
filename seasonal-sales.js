@@ -1,8 +1,9 @@
 var productContainer = document.getElementById("product-container");
 var selectSeason = document.getElementById("select-season");
 
-categories = [];
-products = [];
+var categories = [];
+var products = [];
+var products2 = [];
 
 function createCategoriesArray() { // Step 2 (Departments first b/c it is a smaller file)
 	var departmentData = JSON.parse(this.responseText);
@@ -34,36 +35,41 @@ function dataHandler(productsXHR){ // Begin step 3
 				product["category-name"] = categories[i].name;
 				product["categorySeasonDiscount"] = categories[i].season_discount;
 				product["category-discout"] = categories[i].discount;
+				product["season-price"] = (product.price * (1.00 - categories[i].discount)).toFixed(2);
 			}
 		}
 	})
-		applyDiscount("Autumn");
+		writeProductsToDom("Autumn");
 };
 
-function writeProductsToDom(products) {
+function writeProductsToDom(season) {
 		var productBuilder = "";
 	for (var i = 0; i < products.length; i++) {
 		productBuilder += `<div class="row">`
 		productBuilder += `<div class="col-sm-9 col-md-6"><h3>${products[i].name}</h3>`
-		productBuilder += `<div class="row"> <div class="col-xs-8 col-sm-6"><h4>${products[i].price}</h4></div>`
+		if (season === products[i].categorySeasonDiscount) {
+			productBuilder += `<div class="row"> <div class="col-xs-8 col-sm-6"><h4>${products[i]["season-price"]}</h4></div>`
+		} else {
+			productBuilder += `<div class="row"> <div class="col-xs-8 col-sm-6"><h4>${products[i].price}</h4></div>`
+
+		}
 		productBuilder += `<div class="col-xs-4 col-sm-6"><h4>${products[i].categorySeasonDiscount}</h4></div>`
 		productBuilder += `</div></div></div>`
-		}
 		productContainer.innerHTML = productBuilder
 }
 
-function applyDiscount(season) {
-	var setSalePricing = products;
-	var percentOff = 0;
-	for (var i = 0; i < setSalePricing.length; i++) {
-		if (season === setSalePricing[i].categorySeasonDiscount) {
-			setSalePricing[i].price = setSalePricing[i].price * (1.00 - setSalePricing[i]["category-discout"]);
-			setSalePricing[i].price = (setSalePricing[i].price).toFixed(2);
-			console.log("setSalePricing", setSalePricing[i].price);
-			console.log(products);
-			writeProductsToDom(setSalePricing);
-		}
-	}
+// function applyDiscount(season) {
+// 	var setSalePricing = products2;
+// 	var percentOff = 0;
+// 	for (var i = 0; i < setSalePricing.length; i++) {
+// 		if (season === setSalePricing[i].categorySeasonDiscount) {
+// 			setSalePricing[i].price = setSalePricing[i].price * (1.00 - setSalePricing[i]["category-discout"]);
+// 			setSalePricing[i].price = (setSalePricing[i].price).toFixed(2);
+// 			console.log("setSalePricing", setSalePricing[i].price);
+// 			console.log("products after discount", products);
+// 			writeProductsToDom(setSalePricing);
+// 		}
+// 	}
 		console.log(products[0].name);
 	// for (var i = 0; i < products.length; i++) {
 	// for (key in products) {
@@ -101,13 +107,13 @@ myRequest.send();
 selectSeason.addEventListener("change", function(event) {
   	console.log(event);
   	if (event.target.value === "Spring") {
-		applyDiscount(event.target.value);
+		writeProductsToDom(event.target.value);
   	}
    	else if (event.target.value === "Autumn") {
-		applyDiscount(event.target.value);
+		writeProductsToDom(event.target.value);
   	}
    	else if (event.target.value === "Winter") {
-		applyDiscount(event.target.value);
+		writeProductsToDom(event.target.value);
   	} 	 	
   });
 
