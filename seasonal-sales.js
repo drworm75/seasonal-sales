@@ -35,10 +35,10 @@ function dataHandler(productsXHR){ // Begin step 3
 				product["categorySeasonDiscount"] = categories[i].season_discount;
 				product["category-discout"] = categories[i].discount;
 			}
-		writeProductsToDom(products);
 		}
-	}
-)};
+	})
+		applyDiscount("Autumn");
+};
 
 function writeProductsToDom(products) {
 		var productBuilder = "";
@@ -53,24 +53,39 @@ function writeProductsToDom(products) {
 }
 
 function applyDiscount(season) {
+	var setSalePricing = products;
 	var percentOff = 0;
-	for (var i = 0; i < departmentArray.length; i++) {
-	for (key in departmentArray[i]) {
-		if (departmentArray[i][key] === season) {
-			var percentOff = departmentArray[i].discount;
-			for (var k = 0; k < currentPricing.length; k++) {
-				if(currentPricing[k].category_id === 3) {
-					currentPricing[k].price = currentPricing[k].price * (1.00 - percentOff);
-					currentPricing[k].price = (currentPricing[k].price).toFixed(2);
-					console.log(percentOff);
-				
-			}
+	for (var i = 0; i < setSalePricing.length; i++) {
+		if (season === setSalePricing[i].categorySeasonDiscount) {
+			setSalePricing[i].price = setSalePricing[i].price * (1.00 - setSalePricing[i]["category-discout"]);
+			setSalePricing[i].price = (setSalePricing[i].price).toFixed(2);
+			console.log("setSalePricing", setSalePricing[i].price);
+			console.log(products);
+			writeProductsToDom(setSalePricing);
 		}
 	}
+		console.log(products[0].name);
+	// for (var i = 0; i < products.length; i++) {
+	// for (key in products) {
+	// 	console.log(products);
+	// 	// if (departmentArray[i][key] === season) {
+
+	// 	// 	// var percentOff = departmentArray[i].discount;
+	// 	// 	// for (var k = 0; k < currentPricing.length; k++) {
+	// 	// 	// 	if(currentPricing[k].category_id === 3) {
+	// 	// 	// 		currentPricing[k].price = currentPricing[k].price * (1.00 - percentOff);
+	// 	// 	// 		currentPricing[k].price = (currentPricing[k].price).toFixed(2);
+	// 	// 	// 		console.log(percentOff);
+				
+	// 	// 	// 	}
+	// 	// 	// }
+	// 	// }
+	// // }
+
+	// }
 }
 
-}
-}
+
 
 
 function executeThisCodeAfterFileFails() {
@@ -95,6 +110,7 @@ selectSeason.addEventListener("change", function(event) {
 		applyDiscount(event.target.value);
   	} 	 	
   });
+
 
 
 
